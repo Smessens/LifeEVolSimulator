@@ -1,5 +1,5 @@
 import pygame
-import random, pygame, sys
+import sys
 import math
 
 # Define some colors
@@ -34,14 +34,15 @@ def initPygame(bSize):
     global HEIGHT 
     global MARGIN 
     
-    WIDTH = math.floor(800/bSize)+1
-    HEIGHT = math.floor(800/bSize)+1
-    MARGIN = math.floor(150/bSize)
+    WIDTH = math.floor(750/bSize)+1
+    HEIGHT = math.floor(750/bSize)+1
+    MARGIN = math.floor(300/bSize)
     pygame.init()
     
  
     # Set the HEIGHT and WIDTH of the screen
     WINDOW_SIZE =[(WIDTH+MARGIN)*bSize+MARGIN,(WIDTH+MARGIN)*bSize+MARGIN]
+    print( WIDTH,MARGIN,WINDOW_SIZE)
 
     screen = pygame.display.set_mode(WINDOW_SIZE)
     # Set title of screen
@@ -60,13 +61,24 @@ def updateUI(grid,bSize):
             color = WHITE
             
             if (type(grid[row][column]) == int):
-                color = (0,min(grid[row][column]+5, 255), 0)
+                color = (0,min(math.sqrt(grid[row][column])*2, 255), 0)
                 
-            elif(grid[row][column].kind=="herbivore"):
-                color = (0,0,min(grid[row][column].foodlevel+5, 255))
+            elif(grid[row][column].alive):
+                val=min(math.sqrt(grid[row][column].foodlevel)*2+50,255)
+                if(grid[row][column].kind=="herbivore"):
+                    color = (0,0,val)
                 
-            else:
-                color = (min(grid[row][column].foodlevel+5, 255),0,0)
+                elif(grid[row][column].kind=="carnivore"):
+                    color = (val,0,0)
+                    
+                elif(grid[row][column].kind=="omnivore"):
+                    color = (val,0,val)
+    
+                elif(grid[row][column].kind=="angel"):
+                    color = (min(grid[row][column].foodlevel+5, 255),min(grid[row][column].foodlevel+5, 255),min(grid[row][column].foodlevel+5, 255))
+                else:
+                    print("wtf is that ? UI")
+                
 
             pygame.draw.rect(screen,
                              color,
